@@ -51,5 +51,11 @@ public class Main {
         for (int i=0; i < count; i++){
             System.out.println((i + 1) + ". " + clothes[i]);
         }
+        Clothes copy = new Clothes(clothes[0].getName(), clothes[0].getSize(), clothes[0].getMaterial(), clothes[0].getSexType(), clothes[0].getPrice());
+        System.out.println("Чи однакові об'єкти copy та clothes[0]: "+ clothes[0].equals(copy));
+        System.out.println("Чи copy == clothes[0]: "+ (copy == clothes[0]));
+        if (count > 1) {
+            System.out.println("Перший одяг equals другий: " + clothes[0].equals(clothes[1]));
+        }
     }
 }
