@@ -8,13 +8,13 @@ public class Clothes {
     private int quantity;
 
     public Clothes(String name, String size, String material, String sexType, double price, String brand, int quantity){
-        this.material = material;
-        this.name = name;
-        this.price = price;
-        this.sexType = sexType;
-        this.size = size;
-        this.brand = brand;
-        this.quantity = quantity;
+        setMaterial(material);
+        setBrand(brand);
+        setName(name);
+        setPrice(price);
+        setQuantity(quantity);
+        setSexType(sexType);
+        setSize(size);
     }
 
     public Clothes(){
@@ -52,28 +52,53 @@ public class Clothes {
     public String getBrand() { return brand; }
 
     public void setMaterial(String material) {
+        if(material == null || material.trim().isEmpty()){
+            throw new InvalidClothesDataException("Матеріал не може бути порожнім");
+        }
         this.material = material;
     }
 
     public void setName(String name) {
+        if (name == null || name.trim().isEmpty()){
+            throw new InvalidClothesDataException("Назва не може бути порожньою");
+        }
         this.name = name;
     }
 
     public void setPrice(double price) {
+        if (price<=0 || Double.isNaN(price)){
+            throw new InvalidClothesDataException("Ціна має бути більшою за 0");
+        }
         this.price = price;
     }
 
     public void setSexType(String sexType) {
+        if(sexType == null || sexType.trim().isEmpty()){
+            throw new InvalidClothesDataException("Стать не може бути порожньою");
+        }
         this.sexType = sexType;
     }
 
     public void setSize(String size) {
+        if(size == null || size.trim().isEmpty()){
+            throw new InvalidClothesDataException("Розмір не може бути порожнім");
+        }
         this.size = size;
     }
 
-    public void setBrand(String brand) { this.brand = brand; }
+    public void setBrand(String brand) {
+        if (brand == null || brand.trim().isEmpty()){
+            throw new InvalidClothesDataException("Бренд не може бути порожнім");
+        }
+        this.brand = brand;
+    }
 
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantity(int quantity) {
+        if (quantity < 0){
+            throw new InvalidClothesDataException("Кількість не може бути від'ємною");
+        }
+        this.quantity = quantity;
+    }
 
     @Override
     public String toString() {
