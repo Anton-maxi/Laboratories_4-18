@@ -5,8 +5,18 @@ import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Консольний драйвер програми: меню для створення, виведення й порівняння об'єктів
+ * {@link Clothes} з обробкою некоректного введення.
+ */
 public class Main {
 
+    /**
+     * Зчитує з клавіатури ціле число в діапазоні від 1 до 4 (пункт меню).
+     * Запит повторюється, доки введення не стане коректним.
+     * @param scanner сканер, з якого читається введення
+     * @return пункт меню від 1 до 4
+     */
     public static int readNumber(Scanner scanner) {
         String strNum;
         int num;
@@ -25,6 +35,14 @@ public class Main {
         }
         return num;
     }
+
+    /**
+     * Зчитує рядок і передає його сетеру. Якщо сетер кидає
+     * {@link InvalidClothesDataException}, виводить повідомлення й повторює запит.
+     * @param scanner сканер, з якого читається введення
+     * @param prompt  підказка, що виводиться перед введенням
+     * @param setter  сетер поля, який приймає введений рядок
+     */
     static void readStringField(Scanner scanner, String prompt, Consumer<String> setter){
         while (true){
             System.out.print(prompt);
@@ -38,6 +56,16 @@ public class Main {
             }
         }
     }
+
+    /**
+     * Зчитує число, перетворює його за допомогою парсера й передає сетеру. Нечислове
+     * введення та значення, відхилені сетером, повідомляються користувачу, а запит повторюється.
+     * @param scanner сканер, з якого читається введення
+     * @param prompt  підказка, що виводиться перед введенням
+     * @param parser  функція перетворення рядка на число
+     * @param setter  сетер поля, який приймає число
+     * @param <T>     числовий тип значення
+     */
     static <T extends Number> void readNumberField(Scanner scanner, String prompt, Function<String, T> parser, Consumer<T> setter){
         while (true){
             System.out.print(prompt);
@@ -55,6 +83,10 @@ public class Main {
         }
     }
 
+    /**
+     * Точка входу: показує меню та виконує вибрані дії, доки користувач не завершить роботу.
+     * @param args аргументи командного рядка (не використовуються)
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Clothes> clothes = new ArrayList<>();
