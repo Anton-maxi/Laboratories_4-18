@@ -25,4 +25,13 @@ public enum Gender {
     public String getDisplayName() {
         return displayName;
     }
+
+    /**
+     * Повертає назву українською для виведення користувачу.
+     * @return displayName
+     */
+    @Override
+    public String toString() {
+        return displayName;
+    }
 }

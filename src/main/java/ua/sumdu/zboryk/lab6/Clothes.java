@@ -8,22 +8,24 @@ import java.util.Objects;
  * ті самі сетери, тому правила валідації задані в одному місці.
  */
 public class Clothes {
-    private String name, size, material, sexType, brand;
+    private String name, material, brand;
+    private Gender sexType;
+    private ClothingSize size;
     private double price;
     private int quantity;
 
     /**
      * Створює одяг із перевіркою всіх значень.
      * @param name     назва, не {@code null} і не порожня
-     * @param size     розмір, не {@code null} і не порожній
+     * @param size     розмір, не {@code null}
      * @param material матеріал, не {@code null} і не порожній
-     * @param sexType  стать, не {@code null} і не порожня
+     * @param sexType  стать, не {@code null}
      * @param price    ціна, більша за 0
      * @param brand    бренд, не {@code null} і не порожній
      * @param quantity кількість на складі, не менша за 0
      * @throws InvalidClothesDataException якщо будь-яке значення некоректне
      */
-    public Clothes(String name, String size, String material, String sexType, double price, String brand, int quantity){
+    public Clothes(String name, ClothingSize size, String material, Gender sexType, double price, String brand, int quantity){
         setMaterial(material);
         setBrand(brand);
         setName(name);
@@ -35,14 +37,14 @@ public class Clothes {
 
     /**
      * Створює одяг зі значеннями за замовчуванням: текстові поля мають значення
-     * {@code "none"}, а ціна й кількість дорівнюють 0.
+     * {@code "none"} та стать за замовчуванням UNISEX, а розмір M, а ціна й кількість дорівнюють 0.
      */
     public Clothes(){
         this.material = "none";
         this.name = "none";
         this.price = 0;
-        this.sexType = "none";
-        this.size = "none";
+        this.sexType = Gender.UNISEX;
+        this.size = ClothingSize.M;
         this.brand = "none";
         this.quantity = 0;
     }
@@ -75,7 +77,7 @@ public class Clothes {
      * Повертає стать, для якої призначений одяг.
      * @return стать
      */
-    public String getSexType() {
+    public Gender getSexType() {
         return sexType;
     }
 
@@ -83,7 +85,7 @@ public class Clothes {
      * Повертає розмір.
      * @return розмір
      */
-    public String getSize() {
+    public ClothingSize getSize() {
         return size;
     }
 
@@ -137,24 +139,24 @@ public class Clothes {
 
     /**
      * Задає стать.
-     * @param sexType стать, не {@code null} і не порожня
-     * @throws InvalidClothesDataException якщо стать {@code null} або порожня
+     * @param sexType стать, не {@code null}
+     * @throws InvalidClothesDataException якщо стать {@code null}
      */
-    public void setSexType(String sexType) {
-        if(sexType == null || sexType.trim().isEmpty()){
-            throw new InvalidClothesDataException("Стать не може бути порожньою");
+    public void setSexType(Gender sexType) {
+        if (sexType == null) {
+            throw new InvalidClothesDataException("Стать має бути вибрана");
         }
         this.sexType = sexType;
     }
 
     /**
      * Задає розмір.
-     * @param size розмір, не {@code null} і не порожній
-     * @throws InvalidClothesDataException якщо розмір {@code null} або порожній
+     * @param size розмір, не {@code null}
+     * @throws InvalidClothesDataException якщо розмір {@code null}
      */
-    public void setSize(String size) {
-        if(size == null || size.trim().isEmpty()){
-            throw new InvalidClothesDataException("Розмір не може бути порожнім");
+    public void setSize(ClothingSize size) {
+        if(size == null){
+            throw new InvalidClothesDataException("Розмір має бути вибраний");
         }
         this.size = size;
     }
@@ -189,7 +191,7 @@ public class Clothes {
      */
     @Override
     public String toString() {
-        return "Clothes{name='"+name+"', material='"+material+"', sexType='"+sexType+"', size='"+size+"', price='"+price+"', brand='"+brand+"', quantity='"+quantity+"'}";
+        return "Clothes{name='"+name+"', material='"+material+"', sexType='"+sexType.getDisplayName()+"', size='"+size.getDisplayName()+"', price='"+price+"', brand='"+brand+"', quantity='"+quantity+"'}";
     }
 
     /**

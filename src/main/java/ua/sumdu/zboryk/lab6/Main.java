@@ -58,6 +58,41 @@ public class Main {
     }
 
     /**
+     * Показує нумерований список значень перерахування, зчитує номер вибраного значення
+     * й передає його сетеру. Нечислове введення та номер поза списком повідомляються
+     * користувачу, а запит повторюється.
+     * @param scanner сканер, з якого читається введення
+     * @param prompt  підказка, що виводиться перед списком
+     * @param values  масив значень перерахування для вибору (результат {@code values()})
+     * @param setter  сетер поля, який приймає вибране значення
+     * @param <E>     тип перерахування
+     */
+    static <E extends Enum<E>> void readEnumField(Scanner scanner, String prompt, E[] values, Consumer<E> setter) {
+        while (true){
+            System.out.println(prompt);
+            for(int i=0; i< values.length; i+=1){
+                System.out.println((i+1)+". "+values[i]);
+            }
+            String line = scanner.nextLine();
+            try {
+                int num=Integer.parseInt(line.trim());
+                if (num<1 || num> values.length){
+                    System.out.println("Помилка! Введіть числове значення від 1 до "+values.length+"!");
+                    continue;
+                }
+                setter.accept(values[num - 1]);
+                break;
+            }
+            catch (InvalidClothesDataException e){
+                System.out.println(e.getMessage());
+            }
+            catch (NumberFormatException e){
+                System.out.println("Помилка! Введіть числове значення!");
+            }
+        }
+    }
+
+    /**
      * Зчитує число, перетворює його за допомогою парсера й передає сетеру. Нечислове
      * введення та значення, відхилені сетером, повідомляються користувачу, а запит повторюється.
      * @param scanner сканер, з якого читається введення
@@ -108,8 +143,8 @@ public class Main {
                     Clothes item = new Clothes();
                     readStringField(scanner, "Назва: ", item::setName);
                     readStringField(scanner, "Матеріал: ", item::setMaterial);
-                    readStringField(scanner, "Розмір: ", item::setSize);
-                    readStringField(scanner, "Стать: ", item::setSexType);
+                    readEnumField(scanner, "Розмір:", ClothingSize.values(), item::setSize);
+                    readEnumField(scanner, "Стать:", Gender.values(), item::setSexType);
                     readStringField(scanner, "Бренд: ", item::setBrand);
                     readNumberField(scanner, "Ціна (через крапку): ", Double::parseDouble, item::setPrice);
                     readNumberField(scanner, "Кількість: ", Integer::parseInt, item::setQuantity);
