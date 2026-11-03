@@ -13,6 +13,7 @@ public class Clothes {
     private ClothingSize size;
     private double price;
     private int quantity;
+    private static int count = 0;
 
     /**
      * Створює одяг із перевіркою всіх значень.
@@ -33,11 +34,12 @@ public class Clothes {
         setQuantity(quantity);
         setSexType(sexType);
         setSize(size);
+        count++;
     }
 
     /**
-     * Створює одяг зі значеннями за замовчуванням: текстові поля мають значення
-     * {@code "none"} та стать за замовчуванням UNISEX, а розмір M, а ціна й кількість дорівнюють 0.
+     * Створює одяг зі значеннями за замовчуванням: назва, матеріал і бренд мають значення
+     * {@code "none"}, стать {@code UNISEX}, розмір {@code M}, а ціна й кількість дорівнюють 0.
      */
     public Clothes(){
         this.material = "none";
@@ -47,6 +49,26 @@ public class Clothes {
         this.size = ClothingSize.M;
         this.brand = "none";
         this.quantity = 0;
+        count++;
+    }
+
+    /**
+     * Конструктор копіювання: створює новий одяг із тими самими значеннями полів.
+     * Ціна копіюється напряму, а не через сетер, бо об'єкт за замовчуванням має ціну 0,
+     * яку сетер відхилив би.
+     * @param other одяг, який копіюється, не {@code null}
+     * @throws InvalidClothesDataException якщо {@code other} дорівнює {@code null}
+     */
+    public Clothes(Clothes other){
+        if(other == null) throw new InvalidClothesDataException("Об'єкт для копіювання не може бути null");
+        setMaterial(other.getMaterial());
+        setBrand(other.getBrand());
+        setName(other.getName());
+        this.price = other.getPrice();
+        setQuantity(other.getQuantity());
+        setSexType(other.getSexType());
+        setSize(other.getSize());
+        count++;
     }
 
     /**
@@ -100,6 +122,14 @@ public class Clothes {
      * @return бренд
      */
     public String getBrand() { return brand; }
+
+    /**
+     * Повертає кількість створених об'єктів одягу.
+     * @return кількість створених об'єктів
+     */
+    public static int getCount() {
+        return count;
+    }
 
     /**
      * Задає матеріал.

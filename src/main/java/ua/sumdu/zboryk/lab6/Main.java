@@ -126,6 +126,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Clothes> clothes = new ArrayList<>();
         boolean run = true;
+        Clothes test = new Clothes(new Clothes());
         while (true){
             System.out.println("╔══════════════════════════════════════════════╗");
             System.out.println("║                 МАГАЗИН ОДЯГУ                ║");
