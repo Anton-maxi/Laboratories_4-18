@@ -190,6 +190,7 @@ public class Main {
                         System.out.println("Помилка! Список порожній!");
                         break;
                     }
+                    // список типу ArrayList<Clothes>: toString() викликається у реального типу кожного
                     for(int i=0; i< clothes.size(); i+=1){
                         System.out.println((i+1)+". "+ clothes.get(i));
                     }
