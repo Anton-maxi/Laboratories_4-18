@@ -181,9 +181,8 @@ public class Main {
                     }
 
                     break;
-                case 5:
-                    System.out.println("Створено об'єктів Clothes: " + Clothes.getCount());
-                    break;
+//                case 5:
+//                    break;
                 case 6:
                     System.out.println("Загальна кількість одиниць одягу на складі: " + store.getTotalQuantity());
                     break;

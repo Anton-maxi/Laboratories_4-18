@@ -6,7 +6,6 @@ import java.util.Objects;
  * Одяг із назвою, розміром, матеріалом, статтю, ціною, брендом і кількістю на складі.
  * Усі значення перевіряються в сетерах, а конструктор із параметрами використовує
  * ті самі сетери, тому правила валідації задані в одному місці.
- * Клас рахує кількість створених об'єктів у статичному полі, доступному через {@link #getCount()}
  */
 public class Clothes {
     private String name, material, brand;
@@ -14,7 +13,6 @@ public class Clothes {
     private ClothingSize size;
     private double price;
     private int quantity;
-    private static int count = 0;
 
     /**
      * Створює одяг із перевіркою всіх значень.
@@ -35,7 +33,6 @@ public class Clothes {
         setQuantity(quantity);
         setSexType(sexType);
         setSize(size);
-        count++;
     }
 
     /**
@@ -50,7 +47,6 @@ public class Clothes {
         this.size = ClothingSize.M;
         this.brand = "none";
         this.quantity = 0;
-        count++;
     }
 
     /**
@@ -69,7 +65,6 @@ public class Clothes {
         setQuantity(other.getQuantity());
         setSexType(other.getSexType());
         setSize(other.getSize());
-        count++;
     }
 
     /**
@@ -123,14 +118,6 @@ public class Clothes {
      * @return бренд
      */
     public String getBrand() { return brand; }
-
-    /**
-     * Повертає кількість створених об'єктів одягу.
-     * @return кількість створених об'єктів
-     */
-    public static int getCount() {
-        return count;
-    }
 
     /**
      * Задає матеріал.
