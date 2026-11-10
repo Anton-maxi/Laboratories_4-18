@@ -3,15 +3,16 @@ package ua.sumdu.zboryk.lab7;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.ArrayList;
 
 /**
- * Консольний драйвер програми: меню для створення одягу, виведення складу, демонстрації копіювання й лічильника створених об'єктів {@link Clothes}
- * {@link Clothes} з обробкою некоректного введення.
+ * Консольний драйвер програми: меню для створення одягу, виведення списку
+ * і демонстрації копіювання об'єктів {@link Clothes} з обробкою некоректного введення.
  */
 public class Main {
 
     /**
-     * Зчитує з клавіатури ціле число в діапазоні від 1 до 6 (пункт меню).
+     * Зчитує з клавіатури ціле число в діапазоні від 1 до 4 (пункт меню).
      * Запит повторюється, доки введення не стане коректним.
      * @param scanner сканер, з якого читається введення
      * @return пункт меню від 1 до 6
@@ -23,8 +24,8 @@ public class Main {
             try {
                 strNum = scanner.nextLine();
                 num = Integer.parseInt(strNum.trim());
-                if (num < 1 || num > 6){
-                    System.out.print("Помилка! Введіть ціле число в діапазоні 1-6 (включно): ");
+                if (num < 1 || num > 4){
+                    System.out.print("Помилка! Введіть ціле число в діапазоні 1-4 (включно): ");
                     continue;
                 }
                 break;
@@ -123,7 +124,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ClothesStore store = new ClothesStore("Магазин одягу");
+        ArrayList<Clothes> clothes = new ArrayList<>();
         boolean run = true;
         while (true){
             System.out.println("╔══════════════════════════════════════════╗");
@@ -133,14 +134,12 @@ public class Main {
             System.out.println("║ 2. Вивести всі об'єкти                   ║");
             System.out.println("║ 3. Завершити роботу                      ║");
             System.out.println("║ 4. Демонстрація копіювання               ║");
-            System.out.println("║ 5. Кількість створених об'єктів          ║");
-            System.out.println("║ 6. Загальна кількість одиниць на складі  ║");
             System.out.println("╚══════════════════════════════════════════╝");
             System.out.print("Ваш вибір: ");
             int choice = readNumber(scanner);
             switch (choice){
                 case 1:
-                    System.out.print("Введіть властивості для Одягу "+ (store.getSize()+1)+ ":\n");
+                    System.out.print("Введіть властивості для Одягу "+ (clothes.size()+1)+ ":\n");
                     Clothes item = new Clothes();
                     readStringField(scanner, "Назва: ", item::setName);
                     readStringField(scanner, "Матеріал: ", item::setMaterial);
@@ -149,42 +148,39 @@ public class Main {
                     readStringField(scanner, "Бренд: ", item::setBrand);
                     readNumberField(scanner, "Ціна (через крапку): ", Double::parseDouble, item::setPrice);
                     readNumberField(scanner, "Кількість: ", Integer::parseInt, item::setQuantity);
-                    store.addItem(item);
+                    clothes.add(item);
                     break;
                 case 2:
-                    if (store.isEmpty()){
+                    if (clothes.isEmpty()){
                         System.out.println("Помилка! Список порожній!");
                         break;
                     }
-                    System.out.print(store);
+                    for(int i=0; i< clothes.size(); i+=1){
+                        System.out.println((i+1)+". "+ clothes.get(i));
+                    }
                     break;
                 case 3:
                     run = false;
                     break;
                 case 4:
-                    if (store.isEmpty()){
+                    if (clothes.isEmpty()){
                         System.out.println("Помилка! Список порожній!");
                         break;
                     }
-                    Clothes copy = new Clothes(store.getItem(0));
-                    System.out.println("Чи однакові об'єкти copy та перший: "+ store.getItem(0).equals(copy));
-                    System.out.println("Чи copy == перший: "+ (copy == store.getItem(0)));
-                    if (store.getSize() > 1) {
-                        System.out.println("Перший одяг equals другий: " + store.getItem(0).equals(store.getItem(1)));
+                    Clothes copy = new Clothes(clothes.get(0));
+                    System.out.println("Чи однакові об'єкти copy та перший: "+ clothes.get(0).equals(copy));
+                    System.out.println("Чи copy == перший: "+ (copy == clothes.get(0)));
+                    if (clothes.size() > 1) {
+                        System.out.println("Перший одяг equals другий: " + clothes.get(0).equals(clothes.get(1)));
                     }
                     copy.setName("Змінена");
                     System.out.println("\nНазва змінена!");
-                    System.out.println("Чи однакові об'єкти copy та перший: "+ store.getItem(0).equals(copy));
-                    System.out.println("Чи copy == перший: "+ (copy == store.getItem(0)));
-                    if (store.getSize() > 1) {
-                        System.out.println("Перший одяг equals другий: " + store.getItem(0).equals(store.getItem(1)));
+                    System.out.println("Чи однакові об'єкти copy та перший: "+ clothes.get(0).equals(copy));
+                    System.out.println("Чи copy == перший: "+ (copy == clothes.get(0)));
+                    if (clothes.size() > 1) {
+                        System.out.println("Перший одяг equals другий: " + clothes.get(0).equals(clothes.get(1)));
                     }
 
-                    break;
-//                case 5:
-//                    break;
-                case 6:
-                    System.out.println("Загальна кількість одиниць одягу на складі: " + store.getTotalQuantity());
                     break;
             }
             if (!run){
