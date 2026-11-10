@@ -209,7 +209,7 @@ public class Clothes {
      */
     @Override
     public String toString() {
-        return "Clothes{name='"+name+"', material='"+material+"', sexType='"+sexType.getDisplayName()+"', size='"+size.getDisplayName()+"', price='"+price+"', brand='"+brand+"', quantity='"+quantity+"'}";
+        return getClass().getSimpleName()+": "+"\nname='"+name+"'\nmaterial='"+material+"'\nsexType='"+sexType.getDisplayName()+"'\nsize='"+size.getDisplayName()+"'\nprice='"+price+"'\nbrand='"+brand+"'\nquantity='"+quantity+"'";
     }
 
     /**
