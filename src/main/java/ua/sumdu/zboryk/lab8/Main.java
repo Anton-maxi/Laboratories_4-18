@@ -59,6 +59,26 @@ public class Main {
         }
     }
 
+    static void readBooleanField(Scanner scanner, String prompt, Consumer<Boolean> setter){
+        while (true){
+            System.out.println(prompt);
+            System.out.println("1. Так");
+            System.out.println("2. Ні");
+            System.out.print("Ваш вибір: ");
+            int choice = readNumber(scanner, 1, 2);
+            boolean hasHood;
+            if(choice==1) hasHood=true;
+            else hasHood=false;
+            try {
+                setter.accept(hasHood);
+                break;
+            }
+            catch (InvalidClothesDataException e){
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     /**
      * Показує нумерований список значень перерахування, зчитує номер вибраного значення
      * й передає його сетеру. Нечислове введення та номер поза списком повідомляються
@@ -140,6 +160,15 @@ public class Main {
         readNumberField(scanner, "Кількість: ", Integer::parseInt, item::setQuantity);
     }
 
+    static boolean isSave(Scanner scanner){
+        System.out.println("Зберегти цей об'єкт?");
+        System.out.println("1. Так");
+        System.out.println("2. Ні");
+        System.out.print("Ваш вибір: ");
+        if(readNumber(scanner, 1, 2)==1) return true;
+        return false;
+    }
+
     /**
      * Точка входу: показує меню та виконує вибрані дії, доки користувач не завершить роботу.
      * @param args аргументи командного рядка (не використовуються)
@@ -155,33 +184,53 @@ public class Main {
             System.out.println("║ 1. Створити новий об'єкт                 ║");
             System.out.println("║ 2. Вивести всі об'єкти                   ║");
             System.out.println("║ 3. Завершити роботу                      ║");
-            System.out.println("║ 4. Демонстрація копіювання               ║");
             System.out.println("╚══════════════════════════════════════════╝");
             System.out.print("Ваш вибір: ");
-            int choice = readNumber(scanner, 1, 4);
+            int choice = readNumber(scanner, 1, 3);
             switch (choice){
                 case 1:
                     System.out.println("1. Стандартний клас - Одяг");
                     System.out.println("2. Штани");
                     System.out.println("3. Футболка");
-                    int type = readNumber(scanner, 1, 3);
+                    System.out.println("4. Куртка");
+                    System.out.println("5. Сукня");
+                    System.out.println("6. Вийти із створення об'єкта");
+                    int type = readNumber(scanner, 1, 6);
+                    if (type==6) break;
                     switch (type){
                         case 1:
                             Clothes item_cl = new Clothes();
                             basicField(scanner, item_cl, "Одяг", clothes.size()+1);
+                            if (!isSave(scanner)) break;
                             clothes.add(item_cl);
                             break;
                         case 2:
                             Pants item_pan = new Pants();
                             basicField(scanner, item_pan, "Штани", clothes.size()+1);
                             readNumberField(scanner, "Довжина штанин (см): ", Double::parseDouble, item_pan::setLength);
+                            if (!isSave(scanner)) break;
                             clothes.add(item_pan);
                             break;
                         case 3:
                             Shirts item_sh = new Shirts();
                             basicField(scanner, item_sh, "Футболка", clothes.size()+1);
                             readNumberField(scanner, "Довжина рукава (см): ", Integer::parseInt, item_sh::setSleeveLength);
+                            if (!isSave(scanner)) break;
                             clothes.add(item_sh);
+                            break;
+                        case 4:
+                            Jacket item_ja = new Jacket();
+                            basicField(scanner, item_ja, "Куртка", clothes.size()+1);
+                            readBooleanField(scanner, "З капюшоном?: ", item_ja::setHasHood);
+                            if (!isSave(scanner)) break;
+                            clothes.add(item_ja);
+                            break;
+                        case 5:
+                            Dress item_dr = new Dress();
+                            basicField(scanner, item_dr, "Сукня", clothes.size()+1);
+                            readNumberField(scanner, "Довжина сукні (см): ", Integer::parseInt, item_dr::setLength);
+                            if (!isSave(scanner)) break;
+                            clothes.add(item_dr);
                             break;
                     }
                     break;
@@ -197,26 +246,6 @@ public class Main {
                     break;
                 case 3:
                     run = false;
-                    break;
-                case 4:
-                    if (clothes.isEmpty()){
-                        System.out.println("Помилка! Список порожній!");
-                        break;
-                    }
-                    Clothes copy = new Clothes(clothes.get(0));
-                    System.out.println("Чи однакові об'єкти copy та перший: "+ clothes.get(0).equals(copy));
-                    System.out.println("Чи copy == перший: "+ (copy == clothes.get(0)));
-                    if (clothes.size() > 1) {
-                        System.out.println("Перший одяг equals другий: " + clothes.get(0).equals(clothes.get(1)));
-                    }
-                    copy.setName("Змінена");
-                    System.out.println("\nНазва змінена!");
-                    System.out.println("Чи однакові об'єкти copy та перший: "+ clothes.get(0).equals(copy));
-                    System.out.println("Чи copy == перший: "+ (copy == clothes.get(0)));
-                    if (clothes.size() > 1) {
-                        System.out.println("Перший одяг equals другий: " + clothes.get(0).equals(clothes.get(1)));
-                    }
-
                     break;
             }
             if (!run){
