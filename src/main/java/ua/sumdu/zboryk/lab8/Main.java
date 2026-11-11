@@ -6,8 +6,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Консольний драйвер програми: меню для створення одягу, виведення списку
- * і демонстрації копіювання об'єктів {@link Clothes} з обробкою некоректного введення.
+ * Консольний драйвер програми: меню для створення об'єктів ієрархії одягу
+ * ({@link Clothes}, {@link Pants}, {@link Shirts}, {@link Jacket}, {@link Dress})
+ * та виведення всіх створених об'єктів із єдиного списку з обробкою некоректного введення.
  */
 public class Main {
 
@@ -59,6 +60,14 @@ public class Main {
         }
     }
 
+    /**
+     * Показує вибір «Так» або «Ні», зчитує номер вибраного варіанта й передає
+     * відповідне значення сетеру. Некоректне введення повідомляється користувачу,
+     * а запит повторюється.
+     * @param scanner сканер, з якого читається введення
+     * @param prompt  підказка, що виводиться перед варіантами
+     * @param setter  сетер булевого поля, який приймає вибране значення
+     */
     static void readBooleanField(Scanner scanner, String prompt, Consumer<Boolean> setter){
         while (true){
             System.out.println(prompt);
@@ -160,6 +169,11 @@ public class Main {
         readNumberField(scanner, "Кількість: ", Integer::parseInt, item::setQuantity);
     }
 
+    /**
+     * Питає користувача, чи зберегти щойно введений об'єкт у список.
+     * @param scanner сканер, з якого читається введення
+     * @return {@code true}, якщо користувач вибрав «Так»
+     */
     static boolean isSave(Scanner scanner){
         System.out.println("Зберегти цей об'єкт?");
         System.out.println("1. Так");
