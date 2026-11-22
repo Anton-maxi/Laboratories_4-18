@@ -65,6 +65,11 @@ public class Dress extends Clothes {
         return super.toString()+"\nlength = '"+length+"'";
     }
 
+    @Override
+    public String toFileString(){
+        return super.toFileString()+"; "+ length;
+    }
+
     /**
      * Порівнює сукні за значеннями всіх полів, включно з довжиною.
      * @param obj об'єкт для порівняння

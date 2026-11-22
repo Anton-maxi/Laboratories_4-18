@@ -58,6 +58,11 @@ public class Jacket extends Clothes {
         return super.toString()+"\nhasHood = '"+hasHood+"'";
     }
 
+    @Override
+    public String toFileString(){
+        return super.toFileString()+"; "+ hasHood;
+    }
+
     /**
      * Порівнює куртки за значеннями всіх полів, включно з наявністю капюшона.
      * @param obj об'єкт для порівняння

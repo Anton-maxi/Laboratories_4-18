@@ -64,6 +64,11 @@ public class Shirts extends Clothes {
         return super.toString()+"\nsleeveLength = '"+sleeveLength+"'";
     }
 
+    @Override
+    public String toFileString(){
+        return super.toFileString()+"; "+ sleeveLength;
+    }
+
     /**
      * Порівнює футболки за значеннями всіх полів, включно з довжиною рукава.
      * @param obj об'єкт для порівняння

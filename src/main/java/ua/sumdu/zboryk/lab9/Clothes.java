@@ -212,6 +212,10 @@ public class Clothes {
         return getClass().getSimpleName()+": "+"\nname='"+name+"'\nmaterial='"+material+"'\nsexType='"+sexType.getDisplayName()+"'\nsize='"+size.getDisplayName()+"'\nprice='"+price+"'\nbrand='"+brand+"'\nquantity='"+quantity+"'";
     }
 
+    public String toFileString(){
+        return getClass().getSimpleName()+"; "+name+"; "+ size.getDisplayName()+ "; "+ material+"; "+ sexType.getDisplayName()+"; "+price+"; "+brand+"; "+quantity;
+    }
+
     /**
      * Порівнює одяг за значеннями всіх полів.
      * @param obj об'єкт для порівняння

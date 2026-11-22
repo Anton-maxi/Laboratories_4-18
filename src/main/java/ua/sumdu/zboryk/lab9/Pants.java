@@ -62,6 +62,11 @@ public class Pants extends Clothes {
         return super.toString()+"\nlength = '"+length+"'";
     }
 
+    @Override
+    public String toFileString(){
+        return super.toFileString()+"; "+ length;
+    }
+
     /**
      * Порівнює штани за значеннями всіх полів, включно з довжиною штанин.
      * @param obj об'єкт для порівняння
