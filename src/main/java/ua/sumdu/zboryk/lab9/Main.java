@@ -1,9 +1,8 @@
 package ua.sumdu.zboryk.lab9;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -202,6 +201,112 @@ public class Main {
             System.out.println("Помилка запису: " + e.getMessage());
         }
     }
+    static <E extends Enum<E>> E convertEnum (String text,  E[] values){
+        for (int i=0; i<values.length; i+=1){
+            if (Objects.equals(values[i].toString(), text)){
+             return values[i];
+            }
+        }
+        throw new InvalidClothesDataException("Невідоме значення: " + text);
+    }
+
+    static ArrayList<Clothes> loadFromFile (String fileName){
+        ArrayList<Clothes> res=new ArrayList<>();
+        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
+            String line = "";
+            while (true){
+              line = reader.readLine();
+              if (line == null) break;
+              line=line.trim();
+              if (line.isEmpty() || line.startsWith("#")){
+                  continue;
+              }
+              String[] itemFiled=line.split(";");
+              for (int i=0; i<itemFiled.length; i+=1){
+                  itemFiled[i]=itemFiled[i].trim();
+              }
+              switch (itemFiled[0]){
+                  case "Clothes":
+                      Clothes item_cl = new Clothes(
+                              itemFiled[1],
+                              convertEnum(itemFiled[2], ClothingSize.values()),
+                              itemFiled[3],
+                              convertEnum(itemFiled[4], Gender.values()),
+                              Double.parseDouble(itemFiled[5]),
+                              itemFiled[6],
+                              Integer.parseInt(itemFiled[7])
+                      );
+                      res.add(item_cl);
+                      break;
+                  case "Jacket":
+                      Jacket item_ja = new Jacket(
+                              itemFiled[1],
+                              convertEnum(itemFiled[2], ClothingSize.values()),
+                              itemFiled[3],
+                              convertEnum(itemFiled[4], Gender.values()),
+                              Double.parseDouble(itemFiled[5]),
+                              itemFiled[6],
+                              Integer.parseInt(itemFiled[7]),
+                              Boolean.parseBoolean(itemFiled[8])
+                      );
+                      res.add(item_ja);
+                      break;
+                  case "Pants":
+                      Pants item_pan = new Pants(
+                              itemFiled[1],
+                              convertEnum(itemFiled[2], ClothingSize.values()),
+                              itemFiled[3],
+                              convertEnum(itemFiled[4], Gender.values()),
+                              Double.parseDouble(itemFiled[5]),
+                              itemFiled[6],
+                              Integer.parseInt(itemFiled[7]),
+                              Double.parseDouble(itemFiled[8])
+                      );
+                      res.add(item_pan);
+                      break;
+                  case "Shirts":
+                      Shirts item_sh = new Shirts(
+                              itemFiled[1],
+                              convertEnum(itemFiled[2], ClothingSize.values()),
+                              itemFiled[3],
+                              convertEnum(itemFiled[4], Gender.values()),
+                              Double.parseDouble(itemFiled[5]),
+                              itemFiled[6],
+                              Integer.parseInt(itemFiled[7]),
+                              Integer.parseInt(itemFiled[8])
+                      );
+                      res.add(item_sh);
+                      break;
+                  case "Dress":
+                      Dress item_dr = new Dress(
+                              itemFiled[1],
+                              convertEnum(itemFiled[2], ClothingSize.values()),
+                              itemFiled[3],
+                              convertEnum(itemFiled[4], Gender.values()),
+                              Double.parseDouble(itemFiled[5]),
+                              itemFiled[6],
+                              Integer.parseInt(itemFiled[7]),
+                              Integer.parseInt(itemFiled[8])
+                      );
+                      res.add(item_dr);
+                      break;
+              }
+            }
+            System.out.println("Завантажено з файлу: "+res.size()+" об'єктів!");
+        }
+        catch (IOException e){
+            System.out.println("Помилка: "+ e.getMessage());
+        }
+        return res;
+        // 1. створити порожній список
+// 2. try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) { ... }
+// 3. читати рядки, доки readLine() не поверне null
+// 4. пропустити рядок, якщо після trim() він порожній або починається з "#"
+// 5. розбити рядок на поля: line.split(";"), і в кожного поля trim()
+// 6. за першим полем (тип) у switch створити потрібний об'єкт повним конструктором і додати в список
+// 7. catch (IOException e): вивести помилку
+// 8. повернути список
+    }
 
     /**
      * Точка входу: показує меню та виконує вибрані дії, доки користувач не завершить роботу.
@@ -209,7 +314,7 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Clothes> clothes = new ArrayList<>();
+        ArrayList<Clothes> clothes = loadFromFile(FILE_NAME);
         boolean run = true;
         while (true){
             System.out.println("╔══════════════════════════════════════════╗");
