@@ -1,0 +1,34 @@
+[
+  {
+    "hasHood": true,
+    "name": "Зимова",
+    "material": "Поліестер",
+    "brand": "Columbia",
+    "sexType": "MALE",
+    "size": "L",
+    "price": 2500.0,
+    "quantity": 3,
+    "type": "Jacket"
+  },
+  {
+    "length": 102.5,
+    "name": "Джинси",
+    "material": "Денім",
+    "brand": "Levis",
+    "sexType": "UNISEX",
+    "size": "M",
+    "price": 1200.5,
+    "quantity": 5,
+    "type": "Pants"
+  },
+  {
+    "name": "Шарф",
+    "material": "Вовна",
+    "brand": "Zara",
+    "sexType": "FEMALE",
+    "size": "XL",
+    "price": 300.0,
+    "quantity": 4,
+    "type": "Clothes"
+  }
+]
