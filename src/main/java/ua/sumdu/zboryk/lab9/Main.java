@@ -11,9 +11,15 @@ import java.util.function.Function;
  * Консольний драйвер програми: меню для створення об'єктів ієрархії одягу
  * ({@link Clothes}, {@link Pants}, {@link Shirts}, {@link Jacket}, {@link Dress})
  * та виведення всіх створених об'єктів із єдиного списку з обробкою некоректного введення.
+ * Під час запуску список заповнюється з файлу {@value #FILE_NAME}, а під час завершення
+ * роботи його вміст записується в цей самий файл.
  */
 public class Main {
+    /**
+     * Назва файлу, з якого читаються об'єкти під час запуску й у який вони записуються під час завершення.
+     */
     static final String FILE_NAME = "input.txt";
+
     /**
      * Зчитує з клавіатури ціле число із заданого діапазону (пункт меню).
      * Запит повторюється, доки введення не стане коректним.
@@ -185,6 +191,14 @@ public class Main {
         return false;
     }
 
+    /**
+     * Записує у файл два рядки пояснення формату (починаються з {@code #}), порожній рядок
+     * і по одному рядку {@link Clothes#toFileString()} на кожен об'єкт списку.
+     * Попередній вміст файлу замінюється. Після успішного запису виводить кількість
+     * збережених об'єктів, а в разі помилки введення-виведення виводить повідомлення про неї.
+     * @param clothes список об'єктів для збереження
+     * @param fileName назва файлу
+     */
     static void saveToFile (ArrayList<Clothes> clothes, String fileName){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write("# Один об'єкт на рядок, поля через \"; \": Тип; Назва; Розмір; Матеріал; Стать; Ціна; Бренд; Кількість; Власне поле (у Clothes його немає).");
@@ -201,6 +215,14 @@ public class Main {
             System.out.println("Помилка запису: " + e.getMessage());
         }
     }
+    /**
+     * Шукає значення перерахування, назва для виведення якого ({@code toString()}) збігається з текстом.
+     * @param text текст із файлу, наприклад {@code L} або {@code Чоловіча}
+     * @param values масив значень перерахування для пошуку (результат {@code values()})
+     * @param <E> тип перерахування
+     * @return знайдене значення
+     * @throws InvalidClothesDataException якщо жодне значення не збігається з текстом
+     */
     static <E extends Enum<E>> E convertEnum (String text,  E[] values){
         for (int i=0; i<values.length; i+=1){
             if (Objects.equals(values[i].toString(), text)){
@@ -210,6 +232,15 @@ public class Main {
         throw new InvalidClothesDataException("Невідоме значення: " + text);
     }
 
+    /**
+     * Зчитує об'єкти з файлу і створює їх за типом у першому полі рядка.
+     * Порожні рядки й рядки, що починаються з {@code #}, пропускаються.
+     * Рядок із невідомим типом, неправильною кількістю полів, нечисловим чи недопустимим
+     * значенням пропускається з повідомленням, у якому вказано номер рядка й причину,
+     * а решта файлу читається далі. Якщо файлу немає, повертається порожній список.
+     * @param fileName назва файлу
+     * @return список створених об'єктів (порожній, якщо файлу немає або в ньому немає коректних рядків)
+     */
     static ArrayList<Clothes> loadFromFile (String fileName){
         ArrayList<Clothes> res=new ArrayList<>();
         int numberReadLine=0;

@@ -58,6 +58,11 @@ public class Jacket extends Clothes {
         return super.toString()+"\nhasHood = '"+hasHood+"'";
     }
 
+    /**
+     * Повертає рядок для збереження у файл: поля одягу з {@link Clothes#toFileString()}
+     * і через {@code "; "} наявність капюшона.
+     * @return рядок із типом, базовими полями й наявність капюшона
+     */
     @Override
     public String toFileString(){
         return super.toFileString()+"; "+ hasHood;

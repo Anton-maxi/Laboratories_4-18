@@ -121,8 +121,8 @@ public class Clothes {
 
     /**
      * Задає матеріал.
-     * @param material матеріал, не {@code null} і не порожній
-     * @throws InvalidClothesDataException якщо матеріал {@code null} або порожній
+     * @param material матеріал, не {@code null}, не порожній і без символу {@code ;}
+     * @throws InvalidClothesDataException якщо матеріал {@code null}, порожній або містить символ {@code ;}
      */
     public void setMaterial(String material) {
         if(material == null || material.trim().isEmpty()){
@@ -136,8 +136,8 @@ public class Clothes {
 
     /**
      * Задає назву.
-     * @param name назва, не {@code null} і не порожня
-     * @throws InvalidClothesDataException якщо назва {@code null} або порожня
+     * @param name назва, не {@code null}, не порожня і без символу {@code ;}
+     * @throws InvalidClothesDataException якщо назва {@code null}, порожня або містить символ {@code ;}
      */
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()){
@@ -187,8 +187,8 @@ public class Clothes {
 
     /**
      * Задає бренд.
-     * @param brand бренд, не {@code null} і не порожній
-     * @throws InvalidClothesDataException якщо бренд {@code null} або порожній
+     * @param brand бренд, не {@code null}, не порожній і без символу {@code ;}
+     * @throws InvalidClothesDataException якщо бренд {@code null}, порожній або містить символ {@code ;}
      */
     public void setBrand(String brand) {
         if (brand == null || brand.trim().isEmpty()){
@@ -221,6 +221,12 @@ public class Clothes {
         return getClass().getSimpleName()+": "+"\nname='"+name+"'\nmaterial='"+material+"'\nsexType='"+sexType.getDisplayName()+"'\nsize='"+size.getDisplayName()+"'\nprice='"+price+"'\nbrand='"+brand+"'\nquantity='"+quantity+"'";
     }
 
+    /**
+     * Повертає рядок для збереження у файл: тип і всі поля через {@code "; "}.
+     * Розмір і стать записуються назвами для виведення, тому рядок можна прочитати назад
+     * методом {@link Main#loadFromFile(String)}.
+     * @return рядок у форматі {@code Тип; Назва; Розмір; Матеріал; Стать; Ціна; Бренд; Кількість}
+     */
     public String toFileString(){
         return getClass().getSimpleName()+"; "+name+"; "+ size.getDisplayName()+ "; "+ material+"; "+ sexType.getDisplayName()+"; "+price+"; "+brand+"; "+quantity;
     }

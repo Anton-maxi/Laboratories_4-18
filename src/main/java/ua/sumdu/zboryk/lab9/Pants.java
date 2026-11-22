@@ -62,6 +62,11 @@ public class Pants extends Clothes {
         return super.toString()+"\nlength = '"+length+"'";
     }
 
+    /**
+     * Повертає рядок для збереження у файл: поля одягу з {@link Clothes#toFileString()}
+     * і через {@code "; "} довжину штанин.
+     * @return рядок із типом, базовими полями й довжину штанин
+     */
     @Override
     public String toFileString(){
         return super.toFileString()+"; "+ length;
