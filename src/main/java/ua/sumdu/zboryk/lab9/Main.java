@@ -212,100 +212,130 @@ public class Main {
 
     static ArrayList<Clothes> loadFromFile (String fileName){
         ArrayList<Clothes> res=new ArrayList<>();
+        int numberReadLine=0;
         try(BufferedReader reader = new BufferedReader(new FileReader(fileName))){
             String line = "";
             while (true){
               line = reader.readLine();
+              numberReadLine+=1;
               if (line == null) break;
               line=line.trim();
               if (line.isEmpty() || line.startsWith("#")){
                   continue;
               }
-              String[] itemFiled=line.split(";");
-              for (int i=0; i<itemFiled.length; i+=1){
-                  itemFiled[i]=itemFiled[i].trim();
+              try{
+                  String[] itemFiled=line.split(";");
+                  for (int i=0; i<itemFiled.length; i+=1){
+                      itemFiled[i]=itemFiled[i].trim();
+                  }
+                  int expected = 0;
+                  switch (itemFiled[0]){
+                      case "Clothes":
+                          expected = 8;
+                          if (itemFiled.length!=8){
+                              throw new InvalidClothesDataException("Неправильна кількість полів для " + itemFiled[0] + ": потрібно " + expected + ", а знайдено " + itemFiled.length);
+                          }
+                          Clothes item_cl = new Clothes(
+                                  itemFiled[1],
+                                  convertEnum(itemFiled[2], ClothingSize.values()),
+                                  itemFiled[3],
+                                  convertEnum(itemFiled[4], Gender.values()),
+                                  Double.parseDouble(itemFiled[5]),
+                                  itemFiled[6],
+                                  Integer.parseInt(itemFiled[7])
+                          );
+                          res.add(item_cl);
+                          break;
+                      case "Jacket":
+                          expected = 9;
+                          if (itemFiled.length!=9){
+                              throw new InvalidClothesDataException("Неправильна кількість полів для " + itemFiled[0] + ": потрібно " + expected + ", а знайдено " + itemFiled.length);
+                          }
+                          if(!Objects.equals(itemFiled[8], "true") && !Objects.equals(itemFiled[8], "false")){
+                              throw new InvalidClothesDataException("Капюшон має бути true або false, а вказано: " + itemFiled[8]);
+                          }
+                          Jacket item_ja = new Jacket(
+                                  itemFiled[1],
+                                  convertEnum(itemFiled[2], ClothingSize.values()),
+                                  itemFiled[3],
+                                  convertEnum(itemFiled[4], Gender.values()),
+                                  Double.parseDouble(itemFiled[5]),
+                                  itemFiled[6],
+                                  Integer.parseInt(itemFiled[7]),
+                                  Boolean.parseBoolean(itemFiled[8])
+                          );
+                          res.add(item_ja);
+                          break;
+                      case "Pants":
+                          expected = 9;
+                          if (itemFiled.length!=9){
+                              throw new InvalidClothesDataException("Неправильна кількість полів для " + itemFiled[0] + ": потрібно " + expected + ", а знайдено " + itemFiled.length);
+                          }
+                          Pants item_pan = new Pants(
+                                  itemFiled[1],
+                                  convertEnum(itemFiled[2], ClothingSize.values()),
+                                  itemFiled[3],
+                                  convertEnum(itemFiled[4], Gender.values()),
+                                  Double.parseDouble(itemFiled[5]),
+                                  itemFiled[6],
+                                  Integer.parseInt(itemFiled[7]),
+                                  Double.parseDouble(itemFiled[8])
+                          );
+                          res.add(item_pan);
+                          break;
+                      case "Shirts":
+                          expected = 9;
+                          if (itemFiled.length!=9){
+                              throw new InvalidClothesDataException("Неправильна кількість полів для " + itemFiled[0] + ": потрібно " + expected + ", а знайдено " + itemFiled.length);
+                          }
+                          Shirts item_sh = new Shirts(
+                                  itemFiled[1],
+                                  convertEnum(itemFiled[2], ClothingSize.values()),
+                                  itemFiled[3],
+                                  convertEnum(itemFiled[4], Gender.values()),
+                                  Double.parseDouble(itemFiled[5]),
+                                  itemFiled[6],
+                                  Integer.parseInt(itemFiled[7]),
+                                  Integer.parseInt(itemFiled[8])
+                          );
+                          res.add(item_sh);
+                          break;
+                      case "Dress":
+                          expected = 9;
+                          if (itemFiled.length!=9){
+                              throw new InvalidClothesDataException("Неправильна кількість полів для " + itemFiled[0] + ": потрібно " + expected + ", а знайдено " + itemFiled.length);
+                          }
+                          Dress item_dr = new Dress(
+                                  itemFiled[1],
+                                  convertEnum(itemFiled[2], ClothingSize.values()),
+                                  itemFiled[3],
+                                  convertEnum(itemFiled[4], Gender.values()),
+                                  Double.parseDouble(itemFiled[5]),
+                                  itemFiled[6],
+                                  Integer.parseInt(itemFiled[7]),
+                                  Integer.parseInt(itemFiled[8])
+                          );
+                          res.add(item_dr);
+                          break;
+                      default:
+                          throw new InvalidClothesDataException("Невідомий тип: " + itemFiled[0] + " (допустимі: Clothes, Pants, Shirts, Jacket, Dress)");
+                  }
               }
-              switch (itemFiled[0]){
-                  case "Clothes":
-                      Clothes item_cl = new Clothes(
-                              itemFiled[1],
-                              convertEnum(itemFiled[2], ClothingSize.values()),
-                              itemFiled[3],
-                              convertEnum(itemFiled[4], Gender.values()),
-                              Double.parseDouble(itemFiled[5]),
-                              itemFiled[6],
-                              Integer.parseInt(itemFiled[7])
-                      );
-                      res.add(item_cl);
-                      break;
-                  case "Jacket":
-                      Jacket item_ja = new Jacket(
-                              itemFiled[1],
-                              convertEnum(itemFiled[2], ClothingSize.values()),
-                              itemFiled[3],
-                              convertEnum(itemFiled[4], Gender.values()),
-                              Double.parseDouble(itemFiled[5]),
-                              itemFiled[6],
-                              Integer.parseInt(itemFiled[7]),
-                              Boolean.parseBoolean(itemFiled[8])
-                      );
-                      res.add(item_ja);
-                      break;
-                  case "Pants":
-                      Pants item_pan = new Pants(
-                              itemFiled[1],
-                              convertEnum(itemFiled[2], ClothingSize.values()),
-                              itemFiled[3],
-                              convertEnum(itemFiled[4], Gender.values()),
-                              Double.parseDouble(itemFiled[5]),
-                              itemFiled[6],
-                              Integer.parseInt(itemFiled[7]),
-                              Double.parseDouble(itemFiled[8])
-                      );
-                      res.add(item_pan);
-                      break;
-                  case "Shirts":
-                      Shirts item_sh = new Shirts(
-                              itemFiled[1],
-                              convertEnum(itemFiled[2], ClothingSize.values()),
-                              itemFiled[3],
-                              convertEnum(itemFiled[4], Gender.values()),
-                              Double.parseDouble(itemFiled[5]),
-                              itemFiled[6],
-                              Integer.parseInt(itemFiled[7]),
-                              Integer.parseInt(itemFiled[8])
-                      );
-                      res.add(item_sh);
-                      break;
-                  case "Dress":
-                      Dress item_dr = new Dress(
-                              itemFiled[1],
-                              convertEnum(itemFiled[2], ClothingSize.values()),
-                              itemFiled[3],
-                              convertEnum(itemFiled[4], Gender.values()),
-                              Double.parseDouble(itemFiled[5]),
-                              itemFiled[6],
-                              Integer.parseInt(itemFiled[7]),
-                              Integer.parseInt(itemFiled[8])
-                      );
-                      res.add(item_dr);
-                      break;
+              catch (InvalidClothesDataException e){
+                  System.out.println("Рядок "+numberReadLine+" пропущено: " + e.getMessage());
               }
-            }
-            System.out.println("Завантажено з файлу: "+res.size()+" об'єктів!");
+              catch (NumberFormatException e){
+                  System.out.println("Рядок " + numberReadLine + " пропущено: очікувалось число (" + e.getMessage() + ")");
+              }
+              }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Файл " + fileName + " не знайдено, список порожній.");
         }
         catch (IOException e){
             System.out.println("Помилка: "+ e.getMessage());
         }
         return res;
-        // 1. створити порожній список
-// 2. try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) { ... }
-// 3. читати рядки, доки readLine() не поверне null
-// 4. пропустити рядок, якщо після trim() він порожній або починається з "#"
-// 5. розбити рядок на поля: line.split(";"), і в кожного поля trim()
-// 6. за першим полем (тип) у switch створити потрібний об'єкт повним конструктором і додати в список
-// 7. catch (IOException e): вивести помилку
-// 8. повернути список
     }
 
     /**
@@ -315,6 +345,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Clothes> clothes = loadFromFile(FILE_NAME);
+        System.out.println("Завантажено з файлу: "+clothes.size()+" об'єктів!");
         boolean run = true;
         while (true){
             System.out.println("╔══════════════════════════════════════════╗");

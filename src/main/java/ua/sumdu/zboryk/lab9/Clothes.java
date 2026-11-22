@@ -128,6 +128,9 @@ public class Clothes {
         if(material == null || material.trim().isEmpty()){
             throw new InvalidClothesDataException("Матеріал не може бути порожнім");
         }
+        if(material.contains(";")){
+            throw new InvalidClothesDataException("Назва матеріалу не може містити символ \";\"");
+        }
         this.material = material;
     }
 
@@ -139,6 +142,9 @@ public class Clothes {
     public void setName(String name) {
         if (name == null || name.trim().isEmpty()){
             throw new InvalidClothesDataException("Назва не може бути порожньою");
+        }
+        if(name.contains(";")){
+            throw new InvalidClothesDataException("Назва не може містити символ \";\"");
         }
         this.name = name;
     }
@@ -187,6 +193,9 @@ public class Clothes {
     public void setBrand(String brand) {
         if (brand == null || brand.trim().isEmpty()){
             throw new InvalidClothesDataException("Бренд не може бути порожнім");
+        }
+        if(brand.contains(";")){
+            throw new InvalidClothesDataException("Назва бренду не може містити символ \";\"");
         }
         this.brand = brand;
     }
