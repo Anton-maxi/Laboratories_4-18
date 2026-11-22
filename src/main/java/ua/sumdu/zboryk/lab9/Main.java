@@ -1,5 +1,10 @@
 package ua.sumdu.zboryk.lab9;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -19,6 +24,8 @@ public class Main {
      * Назва файлу, з якого читаються об'єкти під час запуску й у який вони записуються під час завершення.
      */
     static final String FILE_NAME = "input.txt";
+
+    static final String JSON_FILE_NAME = "input.json";
 
     /**
      * Зчитує з клавіатури ціле число із заданого діапазону (пункт меню).
@@ -215,6 +222,25 @@ public class Main {
             System.out.println("Помилка запису: " + e.getMessage());
         }
     }
+
+    static void saveToJson (ArrayList<Clothes> clothes, String fileName){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonArray array = new JsonArray();
+        JsonObject obj;
+        for (int i=0; i<clothes.size(); i+=1){
+            obj = gson.toJsonTree(clothes.get(i)).getAsJsonObject();
+            obj.addProperty("type", clothes.get(i).getClass().getSimpleName());
+            array.add(obj);
+        }
+        try (FileWriter writer = new FileWriter(fileName)) {
+            gson.toJson(array, writer);
+            System.out.println("Збережено: "+ clothes.size()+" об'єктів!");
+        }
+        catch (IOException e) {
+            System.out.println("Помилка запису: " + e.getMessage());
+        }
+    }
+
     /**
      * Шукає значення перерахування, назва для виведення якого ({@code toString()}) збігається з текстом.
      * @param text текст із файлу, наприклад {@code L} або {@code Чоловіча}
@@ -375,7 +401,21 @@ public class Main {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Clothes> clothes = loadFromFile(FILE_NAME);
+        System.out.println("╔══════════════════════════════════════════╗");
+        System.out.println("║          ФОРМАТ ФАЙЛУ З ДАНИМИ           ║");
+        System.out.println("╠══════════════════════════════════════════╣");
+        System.out.println("║ 1. TXT  (input.txt)                      ║");
+        System.out.println("║ 2. JSON (input.json)                     ║");
+        System.out.println("╚══════════════════════════════════════════╝");
+        System.out.print("Ваш вибір: ");
+        int typeFile = readNumber(scanner, 1, 2);
+        ArrayList<Clothes> clothes;
+        if (typeFile ==1){
+            clothes = loadFromFile(FILE_NAME);
+        }
+        else{
+            clothes = new ArrayList<>();
+        }
         System.out.println("Завантажено з файлу: "+clothes.size()+" об'єктів!");
         boolean run = true;
         while (true){
@@ -446,7 +486,8 @@ public class Main {
                     }
                     break;
                 case 3:
-                    saveToFile(clothes, FILE_NAME);
+                    if (typeFile==1) saveToFile(clothes, FILE_NAME);
+                    else saveToJson(clothes, JSON_FILE_NAME);
                     run = false;
                     break;
             }
