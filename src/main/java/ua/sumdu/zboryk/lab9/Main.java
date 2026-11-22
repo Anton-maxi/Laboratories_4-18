@@ -13,17 +13,24 @@ import java.util.function.Function;
  * Консольний драйвер програми: меню для створення об'єктів ієрархії одягу
  * ({@link Clothes}, {@link Pants}, {@link Shirts}, {@link Jacket}, {@link Dress})
  * та виведення всіх створених об'єктів із єдиного списку з обробкою некоректного введення.
- * Під час запуску список заповнюється з файлу {@value #FILE_NAME}, а під час завершення
- * роботи його вміст записується в цей самий файл.
+ * Під час запуску користувач обирає формат даних (TXT або JSON), список заповнюється з файлу
+ * {@value #FILE_NAME} або {@value #JSON_FILE_NAME}, а під час завершення роботи його вміст
+ * записується в той самий файл.
  */
 public class Main {
     /**
-     * Назва файлу, з якого читаються об'єкти під час запуску й у який вони записуються під час завершення.
+     * Назва текстового файлу, з якого читаються об'єкти під час запуску й у який вони записуються під час завершення.
      */
     static final String FILE_NAME = "input.txt";
 
+    /**
+     * Назва JSON-файлу, з якого читаються об'єкти під час запуску й у який вони записуються під час завершення.
+     */
     static final String JSON_FILE_NAME = "input.json";
 
+    /**
+     * Назви полів, обов'язкових для кожного об'єкта в JSON-файлі: тип і всі поля {@link Clothes}.
+     */
     static final String[] BASE_FIELDS = {"type", "name", "material", "brand", "sexType", "size", "price", "quantity"};
 
     /**
@@ -222,6 +229,15 @@ public class Main {
         }
     }
 
+    /**
+     * Записує список у JSON-файл як масив об'єктів. Кожен об'єкт містить усі свої поля
+     * (включно з полями нащадка) і додаткове поле {@code type} з назвою класу, за яким
+     * під час читання визначається, який об'єкт створити. Попередній вміст файлу замінюється.
+     * Після успішного запису виводить кількість збережених об'єктів, а в разі помилки
+     * введення-виведення виводить повідомлення про неї.
+     * @param clothes список об'єктів для збереження
+     * @param fileName назва файлу
+     */
     static void saveToJson (ArrayList<Clothes> clothes, String fileName){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonArray array = new JsonArray();
@@ -394,6 +410,12 @@ public class Main {
         return res;
     }
 
+    /**
+     * Перевіряє, що JSON-об'єкт містить усі вказані поля.
+     * @param obj об'єкт з файлу
+     * @param fields назви обов'язкових полів
+     * @throws InvalidClothesDataException якщо хоча б одного поля немає
+     */
     static void checkFields(JsonObject obj, String[] fields){
         for (int i=0; i<fields.length; i+=1){
             if (!obj.has(fields[i])){
@@ -402,6 +424,14 @@ public class Main {
         }
     }
 
+    /**
+     * Повертає значення поля як ціле число. Дробове значення не обрізається, а вважається помилкою.
+     * @param obj об'єкт з файлу
+     * @param field назва поля
+     * @return ціле значення поля
+     * @throws InvalidClothesDataException якщо значення має дробову частину
+     * @throws NumberFormatException якщо значення не є числом
+     */
     static int readInt(JsonObject obj, String field){
         double number = obj.get(field).getAsDouble();
         int number_int = (int) number;
@@ -411,6 +441,16 @@ public class Main {
         return number_int;
     }
 
+    /**
+     * Зчитує об'єкти з JSON-файлу і створює їх за полем {@code type}. Значення передаються
+     * в повні конструктори, тому діють ті самі перевірки, що й під час введення з клавіатури.
+     * Елемент масиву, який не є об'єктом, не має обов'язкового поля, має невідомий тип,
+     * значення неправильного типу або недопустиме значення, пропускається з повідомленням,
+     * у якому вказано номер елемента й причину. Якщо файлу немає або він не є коректним
+     * JSON-масивом, повертається порожній список.
+     * @param fileName назва файлу
+     * @return список створених об'єктів
+     */
     static ArrayList<Clothes> loadFromJson (String fileName){
         ArrayList<Clothes> res=new ArrayList<>();
         try(FileReader reader = new FileReader(fileName)){
