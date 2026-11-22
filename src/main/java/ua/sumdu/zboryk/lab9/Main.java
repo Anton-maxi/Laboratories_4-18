@@ -1,9 +1,6 @@
 package ua.sumdu.zboryk.lab9;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -26,6 +23,8 @@ public class Main {
     static final String FILE_NAME = "input.txt";
 
     static final String JSON_FILE_NAME = "input.json";
+
+    static final String[] BASE_FIELDS = {"type", "name", "material", "brand", "sexType", "size", "price", "quantity"};
 
     /**
      * Зчитує з клавіатури ціле число із заданого діапазону (пункт меню).
@@ -395,6 +394,127 @@ public class Main {
         return res;
     }
 
+    static void checkFields(JsonObject obj, String[] fields){
+        for (int i=0; i<fields.length; i+=1){
+            if (!obj.has(fields[i])){
+                throw new InvalidClothesDataException("Немає поля: "+ fields[i]);
+            }
+        }
+    }
+
+    static int readInt(JsonObject obj, String field){
+        double number = obj.get(field).getAsDouble();
+        int number_int = (int) number;
+        if (number != (double) number_int){
+            throw new InvalidClothesDataException ("Поле " + field + " має бути цілим числом, а вказано: " + obj.get(field));
+        }
+        return number_int;
+    }
+
+    static ArrayList<Clothes> loadFromJson (String fileName){
+        ArrayList<Clothes> res=new ArrayList<>();
+        try(FileReader reader = new FileReader(fileName)){
+            JsonArray array = JsonParser.parseReader(reader).getAsJsonArray();
+            for (int i=0; i<array.size(); i+=1){
+                try {
+                    JsonObject obj = array.get(i).getAsJsonObject();
+                    checkFields(obj, BASE_FIELDS);
+                    switch (obj.get("type").getAsString()){
+                        case "Clothes":
+                            Clothes item_cl = new Clothes(
+                                    obj.get("name").getAsString(),
+                                    ClothingSize.valueOf(obj.get("size").getAsString()),
+                                    obj.get("material").getAsString(),
+                                    Gender.valueOf(obj.get("sexType").getAsString()),
+                                    obj.get("price").getAsDouble(),
+                                    obj.get("brand").getAsString(),
+                                    readInt(obj, "quantity")
+                            );
+                            res.add(item_cl);
+                            break;
+                        case "Jacket":
+                            checkFields(obj, new String[]{"hasHood"});
+                            if(!obj.get("hasHood").getAsJsonPrimitive().isBoolean()){
+                                throw new InvalidClothesDataException("Капюшон має бути true або false, а вказано: " + obj.get("hasHood"));
+                            }
+                            Jacket item_ja = new Jacket(
+                                    obj.get("name").getAsString(),
+                                    ClothingSize.valueOf(obj.get("size").getAsString()),
+                                    obj.get("material").getAsString(),
+                                    Gender.valueOf(obj.get("sexType").getAsString()),
+                                    obj.get("price").getAsDouble(),
+                                    obj.get("brand").getAsString(),
+                                    readInt(obj, "quantity"),
+                                    obj.get("hasHood").getAsBoolean()
+                            );
+                            res.add(item_ja);
+                            break;
+                        case "Pants":
+                            checkFields(obj, new String[]{"length"});
+                            Pants item_pan = new Pants(
+                                    obj.get("name").getAsString(),
+                                    ClothingSize.valueOf(obj.get("size").getAsString()),
+                                    obj.get("material").getAsString(),
+                                    Gender.valueOf(obj.get("sexType").getAsString()),
+                                    obj.get("price").getAsDouble(),
+                                    obj.get("brand").getAsString(),
+                                    readInt(obj, "quantity"),
+                                    obj.get("length").getAsDouble()
+                            );
+                            res.add(item_pan);
+                            break;
+                        case "Shirts":
+                            checkFields(obj, new String[]{"sleeveLength"});
+                            Shirts item_sh = new Shirts(
+                                    obj.get("name").getAsString(),
+                                    ClothingSize.valueOf(obj.get("size").getAsString()),
+                                    obj.get("material").getAsString(),
+                                    Gender.valueOf(obj.get("sexType").getAsString()),
+                                    obj.get("price").getAsDouble(),
+                                    obj.get("brand").getAsString(),
+                                    readInt(obj, "quantity"),
+                                    readInt(obj, "sleeveLength")
+                            );
+                            res.add(item_sh);
+                            break;
+                        case "Dress":
+                            checkFields(obj, new String[]{"length"});
+                            Dress item_dr = new Dress(
+                                    obj.get("name").getAsString(),
+                                    ClothingSize.valueOf(obj.get("size").getAsString()),
+                                    obj.get("material").getAsString(),
+                                    Gender.valueOf(obj.get("sexType").getAsString()),
+                                    obj.get("price").getAsDouble(),
+                                    obj.get("brand").getAsString(),
+                                    readInt(obj, "quantity"),
+                                    readInt(obj, "length")
+                            );
+                            res.add(item_dr);
+                            break;
+                        default:
+                            throw new InvalidClothesDataException("Невідомий тип: " + obj.get("type").getAsString() + " (допустимі: Clothes, Pants, Shirts, Jacket, Dress)");
+                    }
+                }
+                catch (IllegalArgumentException e){
+                    System.out.println("Елемент "+(i+1)+" пропущено: "+ e.getMessage());
+                }
+                catch (JsonParseException | IllegalStateException | UnsupportedOperationException e){
+                    System.out.println("Елемент " + (i + 1) + " пропущено: значення має неправильний тип (" + e.getMessage() + ")");
+                }
+            }
+        }
+        catch (FileNotFoundException e){
+            System.out.println("Файл " + fileName + " не знайдено, список порожній.");
+        }
+        catch (IOException e){
+            System.out.println("Помилка: "+ e.getMessage());
+        }
+        catch (IllegalStateException | JsonParseException e){
+            System.out.println("Файл "+fileName+" не є коректним JSON-масивом, список порожній: "+ e.getMessage());
+        }
+        return res;
+    }
+
     /**
      * Точка входу: показує меню та виконує вибрані дії, доки користувач не завершить роботу.
      * @param args аргументи командного рядка (не використовуються)
@@ -414,7 +534,7 @@ public class Main {
             clothes = loadFromFile(FILE_NAME);
         }
         else{
-            clothes = new ArrayList<>();
+            clothes = loadFromJson(JSON_FILE_NAME);
         }
         System.out.println("Завантажено з файлу: "+clothes.size()+" об'єктів!");
         boolean run = true;
