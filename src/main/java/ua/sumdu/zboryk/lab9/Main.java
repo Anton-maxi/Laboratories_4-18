@@ -1,5 +1,8 @@
 package ua.sumdu.zboryk.lab9;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.function.Consumer;
@@ -11,7 +14,7 @@ import java.util.function.Function;
  * та виведення всіх створених об'єктів із єдиного списку з обробкою некоректного введення.
  */
 public class Main {
-
+    static final String FILE_NAME = "input.txt";
     /**
      * Зчитує з клавіатури ціле число із заданого діапазону (пункт меню).
      * Запит повторюється, доки введення не стане коректним.
@@ -183,6 +186,23 @@ public class Main {
         return false;
     }
 
+    static void saveToFile (ArrayList<Clothes> clothes, String fileName){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write("# Один об'єкт на рядок, поля через \"; \": Тип; Назва; Розмір; Матеріал; Стать; Ціна; Бренд; Кількість; Власне поле (у Clothes його немає).");
+            writer.newLine();
+            writer.write("# Типи і власне поле: Pants (довжина штанин у см, дробове), Shirts (довжина рукава у см, ціле), Jacket (капюшон: true або false), Dress (довжина у см, ціле); розмір XS, S, M, L, XL, XXL; стать Чоловіча, Жіноча або Унісекс; ціна через крапку.");
+            writer.newLine();
+            writer.newLine();
+            for (int i = 0; i< clothes.size(); i+=1){
+                writer.write(clothes.get(i).toFileString());
+                writer.newLine();
+            }
+            System.out.println("Збережено: "+ clothes.size()+" об'єктів!");
+        } catch (IOException e) {
+            System.out.println("Помилка запису: " + e.getMessage());
+        }
+    }
+
     /**
      * Точка входу: показує меню та виконує вибрані дії, доки користувач не завершить роботу.
      * @param args аргументи командного рядка (не використовуються)
@@ -259,6 +279,7 @@ public class Main {
                     }
                     break;
                 case 3:
+                    saveToFile(clothes, FILE_NAME);
                     run = false;
                     break;
             }
